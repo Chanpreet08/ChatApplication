@@ -17,7 +17,7 @@ var msg = require('./routes/msg');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-mongoose.connect('mongodb://127.0.0.1:27017/chat_application');
+// mongoose.connect('mongodb://127.0.0.1:27017/chat_application');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -29,68 +29,73 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-app.use('/setup', setup);
-app.use('/msg',msg);
-
-
-io.on('connection', function(socket) {
-  //Globals
-  var defaultRoom = 'general';
-  var rooms = ["General", "angular", "socket.io", "express", "node", "mongo", "PHP", "laravel"];
-
-  socket.emit('setup', {
-    rooms: rooms
-  });
-
-  
-  socket.on('new user', function(data) {
-    data.room = defaultRoom;
-    
-    socket.join(defaultRoom);
-    
-    io.in(defaultRoom).emit('user joined', data);
-  });
-
-  //Listens for switch room
-  socket.on('switch room', function(data) {
-    
-    socket.leave(data.oldRoom);
-    socket.join(data.newRoom);
-    io.in(data.oldRoom).emit('user left', data);
-    io.in(data.newRoom).emit('user joined', data);
-
-  });
-
-  
-  socket.on('new message', function(data) {
-    
-    var newMsg = new Chat({
-      username: data.username,
-      content: data.message,
-      room: data.room.toLowerCase(),
-      created: new Date()
-    });
-    
-        newMsg.save(function(err, msg){
-      
-      io.in(msg.room).emit('message created', msg);
-    });
-  });
+server.listen(3001,function(){
+  console.log('listening on 3000');
 });
 
-server.listen(2015);
-console.log('It\'s going down in 2015');
 
-app.all('*',function(req,res,next){
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
-   if (req.method == 'OPTIONS') {
-    res.status(200).end();
-  } else {
-    next();
-  }
-})
+// app.use('/setup', setup);
+// app.use('/msg',msg);
+
+
+// io.on('connection', function(socket) {
+//   //Globals
+//   var defaultRoom = 'general';
+//   var rooms = ["General", "angular", "socket.io", "express", "node", "mongo", "PHP", "laravel"];
+
+//   socket.emit('setup', {
+//     rooms: rooms
+//   });
+
+  
+//   socket.on('new user', function(data) {
+//     data.room = defaultRoom;
+    
+//     socket.join(defaultRoom);
+    
+//     io.in(defaultRoom).emit('user joined', data);
+//   });
+
+//   //Listens for switch room
+//   socket.on('switch room', function(data) {
+    
+//     socket.leave(data.oldRoom);
+//     socket.join(data.newRoom);
+//     io.in(data.oldRoom).emit('user left', data);
+//     io.in(data.newRoom).emit('user joined', data);
+
+//   });
+
+  
+//   socket.on('new message', function(data) {
+    
+//     var newMsg = new Chat({
+//       username: data.username,
+//       content: data.message,
+//       room: data.room.toLowerCase(),
+//       created: new Date()
+//     });
+    
+//         newMsg.save(function(err, msg){
+      
+//       io.in(msg.room).emit('message created', msg);
+//     });
+//   });
+// });
+
+// server.listen(2015);
+// console.log('It\'s going down in 2015');
+
+// app.all('*',function(req,res,next){
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+//    if (req.method == 'OPTIONS') {
+//     res.status(200).end();
+//   } else {
+//     next();
+//   }
+// })
 
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
