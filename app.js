@@ -1,4 +1,5 @@
 var express = require('express');
+var mongoose = require('mongoose');
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
@@ -7,12 +8,15 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-
 var app = express();
+var server = require('http').server(app);
+var io = require('socket.io')(server);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+mongoose.connect('mongodb://127.0.0.1:27017/chat_application');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -24,6 +28,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
+
+app.all('*',function(req,res,next){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+   if (req.method == 'OPTIONS') {
+    res.status(200).end();
+  } else {
+    next();
+  }
+})
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
