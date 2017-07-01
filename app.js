@@ -29,8 +29,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-server.listen(3001,function(){
-  console.log('listening on 3000');
+io.on('connection',(socket=>{
+  console.log('a user is connected');
+}))
+
+server.listen(3005,function(){
+  console.log('listening on 3005');
 });
 
 
