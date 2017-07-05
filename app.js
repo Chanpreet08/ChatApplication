@@ -28,9 +28,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/setup', setup);
+app.use('/msg',msg);
 
 io.on('connection',(socket=>{
   console.log('a user is connected');
+
+  socket.on('message',(data)=>{
+      console.log(data);
+  });
+
 }))
 
 server.listen(3005,function(){
