@@ -5,7 +5,7 @@ var morgan = require('morgan');
 var Chat = require('../model/chatModel');
 
 router.use(morgan('dev'));
-router.route('/').post(function (res, req) {
+router.route('/').post(function (req, res) {
 
   chatData = [{
     created: new Date(),
@@ -38,6 +38,8 @@ router.route('/').post(function (res, req) {
     });
 
   }
+
+  res.end('created');
 });
 
 module.exports = router;

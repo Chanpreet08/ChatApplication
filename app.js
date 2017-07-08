@@ -17,7 +17,7 @@ var msg = require('./routes/msg');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// mongoose.connect('mongodb://127.0.0.1:27017/chat_application');
+ mongoose.connect('mongodb://127.0.0.1:27017/chat_application');
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -31,24 +31,38 @@ app.use('/users', users);
 app.use('/setup', setup);
 app.use('/msg',msg);
 
-io.on('connection',(socket=>{
-  console.log('a user is connected');
+// io.on('connection',(socket=>{
+//   console.log('a user is connected');
 
-  socket.on('message',(data)=>{
-      console.log(data);
-  });
-
-}))
-
-server.listen(3005,function(){
-  console.log('listening on 3005');
-});
+//   socket.on('message',(data)=>{
+//       console.log('message='+data);
+//   });
 
 
-// app.use('/setup', setup);
-// app.use('/msg',msg);
+// }))
+
+// server.listen(3005,function(){
+//   console.log('listening on 3005');
+// });
 
 
+app.use('/setup', setup);
+app.use('/msg',msg);
+
+
+io.on('connection',function(socket){
+    console.log('vnjf');
+    var deafultRoom = 'general';
+
+    var rooms = ['General','angular','socket.io','express','node','mongo','php','laravel'];
+    socket.emit('setup',{
+        rooms:rooms
+    });
+})
+
+server.listen(2015,function(){
+    console.log('listening to 2015');
+})
 // io.on('connection', function(socket) {
 //   //Globals
 //   var defaultRoom = 'general';
