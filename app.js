@@ -16,12 +16,12 @@ var msg = require('./routes/msg');
 var url = require('./config/dbconfig');
 // view engine setup
 
-mongoose.connect(url.url);
-var db = mongoose.connection;
-db.on('error',console.error.bind('connection to server is not established'));
-db.on('open',function(){
-    console.log('conection to database is established');
-})
+// mongoose.connect(url.url);
+// var db = mongoose.connection;
+// db.on('error',console.error.bind('connection to server is not established'));
+// db.on('open',function(){
+//     console.log('conection to database is established');
+// })
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -53,23 +53,23 @@ app.use('/msg',msg);
 // });
 
 
-app.use('/setup', setup);
-app.use('/msg',msg);
+// app.use('/setup', setup);
+// app.use('/msg',msg);
 
 
-io.on('connection',function(socket){
-    console.log('vnjf');
-    var deafultRoom = 'general';
+// io.on('connection',function(socket){
+//     console.log('vnjf');
+//     var deafultRoom = 'general';
 
-    var rooms = ['General','angular','socket.io','express','node','mongo','php','laravel'];
-    socket.emit('setup',{
-        rooms:rooms
-    });
-})
+//     var rooms = ['General','angular','socket.io','express','node','mongo','php','laravel'];
+//     socket.emit('setup',{
+//         rooms:rooms
+//     });
+// })
 
-server.listen(2015,function(){
-    console.log('listening to 2015');
-})
+// server.listen(2015,function(){
+//     console.log('listening to 2015');
+// })
 // io.on('connection', function(socket) {
 //   //Globals
 //   var defaultRoom = 'general';
@@ -130,31 +130,20 @@ server.listen(2015,function(){
 // })
 
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
-
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
+// error handler
 app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
 
 module.exports = app;
