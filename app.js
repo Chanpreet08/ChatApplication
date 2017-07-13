@@ -13,11 +13,18 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var setup = require('./routes/setup');
 var msg = require('./routes/msg');
+var url = require('./config/dbconfig');
 // view engine setup
+
+mongoose.connect(url.url);
+var db = mongoose.connection;
+db.on('error',console.error.bind('connection to server is not established'));
+db.on('open',function(){
+    console.log('conection to database is established');
+})
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
- mongoose.connect('mongodb://127.0.0.1:27017/chat_application');
 
 app.use(favicon());
 app.use(logger('dev'));
