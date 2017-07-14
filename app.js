@@ -16,12 +16,12 @@ var msg = require('./routes/msg');
 var url = require('./config/dbconfig');
 // view engine setup
 
-// mongoose.connect(url.url);
-// var db = mongoose.connection;
-// db.on('error',console.error.bind('connection to server is not established'));
-// db.on('open',function(){
-//     console.log('conection to database is established');
-// })
+mongoose.connect(url.url);
+var db = mongoose.connection;
+db.on('error',console.error.bind('connection to server is not established'));
+db.on('open',function(){
+    console.log('conection to database is established');
+})
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
